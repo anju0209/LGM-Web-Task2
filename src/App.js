@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { React, useState, useEffect } from "react";
+import { Container, Row, Col, Button } from "reactstrap";
+import Header from "./components/Header";
+import UserCard from "./components/UserCard";
+import Axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
-function App() {
+const App = () => {
+  const [users, setUsers] = useState([]);
+
+  const fetchData = async () => {
+    const { data } = await Axios.get("https://reqres.in/api/users?page=1");
+    const details = data.data;
+
+    setUsers(details);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Header handleClick={fetchData} />
+      <Row>
+        {users.map((user) => (
+          <Col md={4} key={user.id}>
+            <UserCard user={user} />
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
-}
+};
 
 export default App;
